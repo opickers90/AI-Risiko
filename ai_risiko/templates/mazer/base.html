@@ -1,0 +1,37 @@
+{% load static i18n %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}AI Risiko{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Risiko">
+    <meta name="author" content="Seno A. K.">
+
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'vendors/mazer/assets/css/main/app.css' %}" />
+    <!--
+    <link rel="stylesheet" href="{% static 'vendors/mazer/assets/css/main/app-dark.css' %}" />
+    -->
+    <link rel="stylesheet" href="{% static 'vendors/weather-icons/css/weather-icons.min.css' %}" />
+    {% endblock %}
+
+    <link
+      rel="shortcut icon"
+      href="{% static 'vendors/mazer/assets/images/logo/favicon.svg' %}"
+      type="image/x-icon"
+    />
+
+    <link
+      rel="shortcut icon"
+      href="{% static 'vendors/mazer/assets/images/logo/favicon.png' %}"
+      type="image/png"
+    />
+
+    {% block css_extra %}{% endblock %}
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+  </body>
+</html>

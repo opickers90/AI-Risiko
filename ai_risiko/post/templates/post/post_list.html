@@ -1,0 +1,64 @@
+{% extends "newdashboard/index.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "All Posts" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "All Posts" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active"><a href="{% url 'newdashboard:post-list' %}">{% translate "Posts" %}</a></li>
+{% endblock %}
+
+{% block page_content %}
+{% for object in object_list %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-file-alt"></i>&nbsp;&nbsp;<a href="{% url 'newdashboard:post-detail' object.id %}{% if object.url_parameters %}?{{ object.url_parameters|urlencode:'=&' }}{% endif %}">{{ object.title }}</a> | <span class="text-muted">{% translate "Posted by" %} &quot;{{ object.user.username }}&quot; {% translate "on" %} {{ object.created }} ({% translate "Last updated" %} {{ object.updated }})</span></h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if object.teaser %}
+        {{ object.teaser }}
+        {% endif %}
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<ul class="pagination justify-content-center">
+  {% if page_obj.has_previous %}
+  <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+  {% else %}
+  <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+  {% endif %}
+
+  {% for i in paginator.page_range %}
+  {% if page_obj.number == i %}
+  <li class="page-item active"><a class="page-link">{{ i }} <span class="sr-only">({% translate "current" %})</span></a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+  {% endif %}
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+  <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+  {% else %}
+  <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+  {% endif %}
+</ul>
+<p class="text-center">{% blocktranslate with start_index=page_obj.start_index end_index=page_obj.end_index total_entries=page_obj.paginator.count %}Showing {{ start_index }} to {{ end_index }} out of {{ total_entries }} posts{% endblocktranslate %}</p>
+<p>&nbsp;</p>
+{% endblock %}
+
+{% block javascript_extra %}
+{% endblock %}

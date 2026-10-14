@@ -1,0 +1,155 @@
+{% extends "dashboard/index.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Risk Calculation" %} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                {% airisiko_active_url request "dashboard:openquakejob-list" as active_url %}
+                <li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+                  {% if active_url %}
+                  {% translate "Risk Calculation" %}
+                  {% else %}
+                  <a href="{% url 'dashboard:openquakejob-list' %}">{% translate "Risk Calculation" %}</a>
+                  {% endif %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Risk Calculation" %}
+            </h1>
+            <h4>
+              {% translate "Quota usage" %}: {{ openquake_completed_jobs }} / {{ request.user.openquakejob_quota|default:"-" }}
+            </h4>
+          </div>
+          <div class="card-body">
+            {% airisiko_check_active_calculation_server "openquake" as calculation_server_active %}
+            {% if not calculation_server_active %}
+            <div class="alert alert-warning">
+              {% blocktranslate %}EQ Engine Server(s) are currently inactive. Please refresh this page periodically for latest availability.{% endblocktranslate %}
+            </div>
+            {% endif %}
+            {% blocktranslate %}
+            <p>List of Risk Calculation jobs.</p>
+            <p class="m-0">The following actions are available:</p>
+            <ul>
+              <li>View job details</li>
+              <li>Download job archive files</li>
+              <li>Download job result files</li>
+              <li>Stop a running job</li>
+              <li>Delete jobs</li>
+            </ul>
+            {% endblocktranslate %}
+            <table id="datatable" class="table table-striped dt-responsive nowrap" style="width:100%">
+              <thead>
+                <tr>
+                  <th>{% translate "ID" %}</th>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Created" %}</th>
+                  <th>{% translate "Creator" %}</th>
+                  <th>{% translate "Task State" %}</th>
+                  <th>{% translate "Job Archive File" %}</th>
+                  <th>{% translate "Job ID" %}</th>
+                  <th>{% translate "Job Status" %}</th>
+                  <th>{% translate "Job Result (Datastore)" %}</th>
+                  <th>{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for openquakejob in object_list %}
+                <tr>
+                  <td title="{% translate 'ID' %}">
+                    {{ openquakejob.id }}
+                  </td>
+                  <td title="{% translate 'Name' %}">
+                    <a href="{% url 'dashboard:openquakejob-detail' openquakejob.id %}" title="{% translate 'View details' %}">{{ openquakejob.name|default:"-" }}</a>
+                  </td>
+                  <td title="{% translate 'Created' %}">
+                    {{ openquakejob.created }}
+                  </td>
+                  <td title="{% translate 'Creator' %}">
+                    {{ openquakejob.user|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Task State' %}">
+                    {{ openquakejob.task_state|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Job Archive File' %}">
+                    {% if openquakejob.file %}
+                    <a href="{{ openquakejob.file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ openquakejob.file|airisiko_filename }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                  <td title="{% translate 'Job ID' %}">
+                    {{ openquakejob.job_id|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Job Status' %}">
+                    {{ openquakejob.job_status|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Job Result (Datastore)' %}">
+                    {% if openquakejob.job_results_datastore_file %}
+                    <a href="{{ openquakejob.job_results_datastore_file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ openquakejob.job_results_datastore_file|airisiko_filename }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                  <td title="{% translate 'Actions' %}">
+                    {% if openquakejob.job_status == "created" or openquakejob.job_status == "executing" %}
+                    <a href="{% url 'dashboard:openquakejob-abort' openquakejob.id %}" class="btn icon btn-sm btn-warning" title="{% translate 'Stop Job' %}"><i class="bi bi-stop-circle"></i></a>
+                    &nbsp;
+                    {% endif %}
+
+                    {% if request.user.is_superuser %}
+                    {% if openquakejob.job_status == "complete" or openquakejob.job_status == "aborted" or openquakejob.job_status == "failed" %}
+                    <a href="{% url 'dashboard:openquakejob-remove' openquakejob.id %}" class="btn icon btn-sm btn-danger" title="{% translate 'Remove Job' %}"><i class="bi bi-x-circle"></i></a>
+                    &nbsp;
+                    {% endif %}
+                    {% endif %}
+
+                    {% comment %}Non superuser cannot delete completed job to reduce quota usage!{% endcomment %}
+                    {% if not request.user.is_superuser and openquakejob.job_status == "complete" %}
+                    {% else %}
+                    <a href="{% url 'dashboard:openquakejob-delete' openquakejob.id %}" class="btn icon btn-sm btn-danger" title="{% translate 'Delete Job' %}"><i class="bi bi-trash"></i></a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var table = $("#datatable").DataTable({
+    order: [[ 0, 'desc' ]],
+    pageLength: 50,
+  });
+});
+</script>
+{% endblock %}

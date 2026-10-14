@@ -1,0 +1,303 @@
+{% extends "adminlte/base.html" %}
+
+{% load static i18n airisiko_tags %}
+
+{% block title %}Dashboard - {{ block.super }}{% endblock title %}
+
+{% block navbar %}
+{% include "newdashboard/includes/navbar.html" %}
+{% endblock %}
+
+{% block sidebar %}
+{% include "newdashboard/includes/sidebar.html" %}
+{% endblock %}
+
+{% block content_header %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">{% block page_title %}{% translate "Dashboard" %}{% endblock %}</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          {% block breadcrumb %}
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">{% translate "Home" %}</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'newdashboard:index' %}">{% translate "Dashboard" %}</a></li>
+          {% endblock %}
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+{% endblock %}
+
+{% block content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    {% block page_content %}
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-info elevation-1"><i class="fas fa-server"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">{% translate "Active Calculation Servers" %}</span>
+            <span class="info-box-number">
+              1/1
+              <!-- <small>%</small> -->
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3">
+          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-ticket-alt"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">{% translate "Calculation Quota Usage" %}</span>
+            <span class="info-box-number">{{ openquake_completed_jobs }} / {{ request.user.openquakejob_quota|default:"-" }}</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+
+      <!-- fix for small devices only -->
+      <div class="clearfix hidden-md-up"></div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3">
+          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-building"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">{% translate "Total Exposure" %}</span>
+            <span class="info-box-number">{% comment %}9999{% endcomment %}-</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3">
+          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-dollar-sign"></i></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text">{% translate "Total Loss" %}</span>
+            <span class="info-box-number">{% comment %}IDR 999,999,999.00{% endcomment %}-</span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    {% if request.GET.post_id %}
+    {% airisiko_get_post "admin,admin_airisiko" "PUBLISHED" "PUBLIC_DASHBOARD" request.GET.post_id as latest_admin_public_post %}
+    {% else %}
+    {% airisiko_get_post "admin,admin_airisiko" "PUBLISHED" "PUBLIC_DASHBOARD" as latest_admin_public_post %}
+    {% endif %}
+    {% if latest_admin_public_post %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bullhorn"></i>&nbsp;&nbsp;<a href="{% url 'newdashboard:post-detail' latest_admin_public_post.id %}{% if latest_admin_public_post.url_parameters %}?{{ latest_admin_public_post.url_parameters|urlencode:'=&' }}{% endif %}">{{ latest_admin_public_post.title }}</a> | <span class="text-muted">{% translate "Posted by" %} &quot;{{ latest_admin_public_post.user.username }}&quot; {% translate "on" %} {{ latest_admin_public_post.created }} ({% translate "Last updated" %} {{ latest_admin_public_post.updated }})</span></h3>
+            <div class="card-tools">
+              <div class="btn-group">
+                <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
+                  {% translate "More Public Posts" %}
+                </button>
+                {% airisiko_get_post "admin,admin_airisiko" "PUBLISHED" "PUBLIC_DASHBOARD" post_id=None return_one=False order_asc=True as all_admin_public_posts %}
+                {% if all_admin_public_posts %}
+                <div class="dropdown-menu dropdown-menu-right" role="menu">
+                  {% for all_admin_public_post in all_admin_public_posts %}
+                  <a href="{% url 'newdashboard:index' %}?post_id={{ all_admin_public_post.id }}" class="dropdown-item">{{ all_admin_public_post.title }}</a>
+                  {% endfor %}
+                  <a class="dropdown-divider"></a>
+                  <a href="{% url 'newdashboard:post-list' %}" class="dropdown-item">{% translate "View All Posts" %}</a>
+                </div>
+                {% endif %}
+              </div>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            {% if latest_admin_public_post.teaser %}
+            {{ latest_admin_public_post.teaser }}
+            <br>
+            <br>
+            {% endif %}
+            {% if latest_admin_public_post.format == "TEXT" %}
+            {{ latest_admin_public_post.content }}
+            {% elif latest_admin_public_post.format == "HTML" %}
+            {{ latest_admin_public_post.content|safe }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    {% endif %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">{% translate "Introduction" %}</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <!--
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                  -->
+                </div>
+              </div>
+              <div class="card-body">
+                <p>
+                  {% blocktranslate with username=request.user.username %}Welcome to AI Risiko, {{ username }}!{% endblocktranslate %}
+                </p>
+                <p>
+                  {% blocktranslate %}...{% endblocktranslate %}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">{% translate "Latest Updates" %}</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <!--
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                  -->
+                </div>
+              </div>
+              <div class="card-body">
+                <p>
+                  {% blocktranslate %}August 2024 &mdash; We are currently developing a new look for the dashboard. Please report any issues to us!{% endblocktranslate %}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">{% translate "Losses By Hazard Type" %}</h3>
+
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <!--
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+              -->
+            </div>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="chart-responsive">
+                  <canvas id="pieChart" height="150"></canvas>
+                </div>
+                <!-- ./chart-responsive -->
+              </div>
+              <!-- /.col -->
+              <div class="col-md-4">
+                <ul class="chart-legend clearfix">
+                  <li><i class="far fa-circle text-danger"></i> {% translate "Earthquake" %}</li>
+                  <li><i class="far fa-circle text-primary"></i> {% translate "Tsunami" %}</li>
+                  <li><i class="far fa-circle text-warning"></i> {% translate "Flooding" %}</li>
+                </ul>
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+    {% endblock %}
+  </div>
+  <!--/. container-fluid -->
+</section>
+<!-- /.content -->
+{% endblock %}
+
+{% block footer %}
+{% include "newdashboard/includes/footer.html" %}
+{% endblock %}
+
+{% block javascript_extra %}
+<script type="text/javascript">
+/* global Chart:false */
+$(function () {
+  'use strict'
+
+  //-------------
+  // - PIE CHART -
+  //-------------
+  // Get context with jQuery - using jQuery's .get() method.
+  var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+  var pieData = {
+    labels: [
+      '{% translate "Earthquake" %}',
+      '{% translate "Tsunami" %}',
+      '{% translate "Flooding" %}'
+    ],
+    datasets: [
+      {
+        data: [500000000, 400000000, 200000000],
+        backgroundColor: ['#f56954', '#007BFF', '#f39c12']
+      }
+    ]
+  }
+  var pieOptions = {
+    legend: {
+      display: false
+    }
+  }
+  // Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  // eslint-disable-next-line no-unused-vars
+  var pieChart = new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: pieData,
+    options: pieOptions
+  })
+
+  //-----------------
+  // - END PIE CHART -
+  //-----------------
+})
+</script>
+{% endblock %}

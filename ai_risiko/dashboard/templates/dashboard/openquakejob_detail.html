@@ -1,0 +1,225 @@
+{% extends "dashboard/openquakejob_list.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{{ object.name|default:"-" }} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+
+<style type="text/css">
+.dataTables_wrapper {
+  margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                <li class="breadcrumb-item active" aria-current="page">
+                  {{ object.name|default:"-" }}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Risk Calculation job" %}: {{ object.name|default:"-" }}
+            </h1>
+          </div>
+          <div class="card-body">
+            <div class="btn-group dropdown mb-4">
+              <button type="button" class="btn btn-primary">
+                {% translate "Job Details" %}
+              </button>
+              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                <span class="sr-only">{% translate "Options" %}</span>
+              </button>
+              {% if object.job_status == "complete" %}
+              {% airisiko_openquakejob_has_risk_matrix object as has_risk_matrix %}
+              {% if has_risk_matrix %}
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'dashboard:risk-matrix-detail' object.id %}">{% translate "View Risk Matrix" %}</a>
+              </div>
+              {% endif %}
+              {% endif %}
+            </div>
+            {% blocktranslate %}
+            <p></p>
+            {% endblocktranslate %}
+            <table class="table table-striped dt-responsive nowrap" style="width:100%" id="">
+              <tbody>
+                <tr>
+                  <th>{% translate "ID" %}</th>
+                  <td>{{ object.id }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Name" %}</th>
+                  <td>{{ object.name }}</td>
+                </tr>
+                {% if object.exposure and object.exposure.exposure_upload %}
+                <tr>
+                  <th>{% translate "Exposure" %}</th>
+                  <td><a href="{% url 'dashboard:exposureupload-detail' object.exposure.exposure_upload.id %}" target="_blank">{{ object.exposure }}</a></td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <th>{% translate "Created" %}</th>
+                  <td>{{ object.created }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Updated" %}</th>
+                  <td>{{ object.updated }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Creator" %}</th>
+                  <td>{{ object.user|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Task ID" %}</th>
+                  <td>{{ object.task_id|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Task State" %}</th>
+                  <td id="task-state">{{ object.task_state|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Task Start" %}</th>
+                  <td>{{ object.task_start|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Task End" %}</th>
+                  <td>{{ object.task_end|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Job Archive File" %}</th>
+                  <td>
+                    {% if object.file %}
+                    <a href="{{ object.file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ object.file|airisiko_filename }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{% translate "Job ID" %}</th>
+                  <td id="job-id">{{ object.job_id|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Job Status" %}</th>
+                  <td id="job-status">{{ object.job_status|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <th>{% translate "Job Result (Datastore)" %}</th>
+                  <td>
+                    {% if object.job_results_datastore_file %}
+                    <ul>
+                      <li><a href="{{ object.job_results_datastore_file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ object.job_results_datastore_file|airisiko_filename }}</a></li>
+                    </ul>
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{% translate "Job Results" %}</th>
+                  <td>
+                    {% if object.job_results %}
+                    <ul>
+                      {% for result_file in object.result_files.all %}
+                      <li><a href="{{ result_file.file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ result_file.name }}</a></li>
+                      {% endfor %}
+                    </ul>
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <th>{% translate "Job Log" %}</th>
+                  <td><textarea id="job-log" class="form-control" rows="20" readonly>{{ object.job_message|default:"-" }}</textarea></td>
+                </tr>
+                <tr>
+                  <th>{% translate "Info" %}</th>
+                  <td id="info">{{ object.info|default:"-" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var table = $("#datatable").DataTable({
+    pageLength: 50,
+  });
+
+  var taskState = $("#task-state").text();
+
+  if (taskState == "-" || taskState == "PENDING" || taskState == "STARTED") {
+    const pollJobDetails = setInterval(function() {
+      if (taskState == "SUCCESS") {
+        clearInterval(pollJobDetails);
+        return;
+      }
+
+      $.ajax({
+        type: "GET",
+        url: "{% url 'api:oq_job_details' %}",
+        data: {
+          id: {{ object.id }}
+        },
+        success: function(resp) {
+          var result = resp["success"];
+          if (result == true) {
+            taskState = resp["data"].task_state;
+            var info = resp["data"].info;
+            var jobID = resp["data"].job_id;
+            var jobStatus = resp["data"].job_status;
+            var jobLog = resp["data"].job_message;
+            $("#info").text(info);
+            $("#task-state").text(taskState);
+            $("#job-id").text(jobID);
+            $("#job-status").fadeOut(500);
+            $("#job-status").text(jobStatus);
+            $("#job-status").fadeIn(500);
+            $("#job-log").val(jobLog);
+            $("#job-log").animate({
+              scrollTop: $("#job-log")[0].scrollHeight - $("#job-log").height()
+            }, 1000);
+            if (taskState == "SUCCESS" || taskState == "FAILURE") {
+              location.reload();
+            }
+          } else {
+            console.log(resp["error"]);
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log(xhr.responseText);
+          console.log(status);
+          console.log(error);
+        }
+      });
+    }, 5000);
+  }
+});
+</script>
+{% endblock %}

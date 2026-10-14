@@ -1,0 +1,42 @@
+pytz==2022.7.1  # https://github.com/stub42/pytz
+python-slugify==8.0.1  # https://github.com/un33k/python-slugify
+Pillow==9.4.0  # https://github.com/python-pillow/Pillow
+argon2-cffi==21.3.0  # https://github.com/hynek/argon2_cffi
+whitenoise==6.4.0  # https://github.com/evansd/whitenoise
+redis==4.5.1  # https://github.com/redis/redis-py
+hiredis==2.2.2  # https://github.com/redis/hiredis-py
+celery==5.2.7  # pyup: < 6.0  # https://github.com/celery/celery
+django-celery-beat==2.5.0  # https://github.com/celery/django-celery-beat
+flower==1.2.0  # https://github.com/mher/flower
+
+# Django
+# ------------------------------------------------------------------------------
+django==4.1.7  # pyup: < 4.1  # https://www.djangoproject.com/
+django-environ==0.10.0  # https://github.com/joke2k/django-environ
+django-model-utils==4.3.1  # https://github.com/jazzband/django-model-utils
+django-allauth==0.52.0  # https://github.com/pennersr/django-allauth
+django-crispy-forms==2.0  # https://github.com/django-crispy-forms/django-crispy-forms
+crispy-bootstrap5==0.7  # https://github.com/django-crispy-forms/crispy-bootstrap5
+django-redis==5.2.0  # https://github.com/jazzband/django-redis
+# Django REST Framework
+djangorestframework==3.14.0  # https://github.com/encode/django-rest-framework
+django-cors-headers==3.14.0  # https://github.com/adamchainz/django-cors-headers
+# DRF-spectacular for api documentation
+drf-spectacular==0.26.0  # https://github.com/tfranzel/drf-spectacular
+
+# AI Risiko requirements
+djangorestframework-gis==1.0.0  # https://github.com/openwisp/django-rest-framework-gis
+django-filter==22.1  # https://github.com/carltongibson/django-filter
+# 202608 fix osm basemap, upgrade leaflet js version from 1.7.1 to 1.9.3 to support referrerPolicy settings
+# django-leaflet==0.28.3  # https://github.com/makinacorpus/django-leaflet
+django-leaflet==0.30.1  # https://github.com/makinacorpus/django-leaflet
+python-magic==0.4.27  # https://github.com/ahupp/python-magic
+django-related-admin==1.0.1  # https://github.com/PetrDlouhy/django-related-admin
+crispy-bootstrap3==2022.1  # https://github.com/django-crispy-forms/crispy-bootstrap3
+boto3==1.28.2  # https://github.com/boto/boto3
+django-filebrowser-no-grappelli==4.0.2  # https://github.com/smacker/django-filebrowser-no-grappelli
+dj-rest-auth==4.0.0  # https://github.com/iMerica/dj-rest-auth
+djangorestframework-simplejwt==5.3.1  # https://github.com/jazzband/djangorestframework-simplejwt
+django-recaptcha==4.0.0  # https://github.com/django-recaptcha/django-recaptcha
+django-picklefield==3.2.0  # http://github.com/gintas/django-picklefield django-constance dependency, lock version for django 4.1
+django-constance==3.1.0  # https://github.com/jazzband/django-constance

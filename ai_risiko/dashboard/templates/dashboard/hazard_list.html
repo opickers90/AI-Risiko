@@ -1,0 +1,75 @@
+{% extends "dashboard/index.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Hazard" %} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                {% airisiko_active_url request "dashboard:hazard-list" as active_url %}
+                <li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+                  {% if active_url %}
+                  {% translate "Hazard" %}
+                  {% else %}
+                  <a href="{% url 'dashboard:hazard-list' %}">{% translate "Hazard" %}</a>
+                  {% endif %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Hazard" %}
+            </h1>
+          </div>
+          <div class="card-body">
+            <div class="text-center">
+              <img class="img-fluid" src="{% static 'images/hazard-1.png' %}">
+              <p>Gambar 1: Peta <em>earthquake ruptures</em> skenario kejadian gempa</p>
+            </div>
+            <p><em>Stochastic event set calculator</em> menggunakan model sumber (<em>source model</em>) dan <em>logic tree</em> (<em>source model</em>) untuk menghitung <em>earthquake rupture forecast</em> (ERF). ERF menghasilkan <em>event set</em> yaitu list dari <em>rupture</em> yang mungkin terjadi dari seluruh sumber gempa beserta probabilitas terjadinya. Hasilnya diperoleh 11.672.993 <em>ruptures</em> yang merupakan rupture dari <em>event set</em>.</p>
+            <p>GMPE <em>logic tree</em> menggunakan <em>weighted mean</em> dari tingkat aktivitas gempa untuk masing-masing dari tiga model sumber tersebut. Faktor amplifikasi tanah dimodelkan dengan tiga proksi: topografi, VS30 (dari kemiringan topografi, menggunakan metode (Allen, Trevor I; Wald, 2007)) dan unit/ umur geologi.</p>
+            <p>Ketidakpastian epistemik dalam model sumber gempa dan ground motion diperbanyak (<em>propagated</em>) melalui penggunaan pohon logika (Pagani dkk., 2014). Jumlah ini cukup untuk kajian risiko skalan nasional. Katalog stokastik 1.000 tahun, dan ground motion fields untuk setiap kejadian di <em>stochastic catalogue</em>, dihasilkan untuk masing-masing cabang pohon logika sampel (juga disebut sebagai <em>'realization'</em> ), dengan mempertimbangkan hanya gempa bumi dengan magnitudo di atas 5,5 dan jarak dalam 300 km dari episenter.</p>
+            <div class="text-center">
+              <img class="img-fluid" src="{% static 'images/hazard-2.png' %}">
+              <p>Gambar 2: <em>Intensity fields</em></p>
+            </div>
+            <p><em>Event-based risk calculator</em> menghitung risiko berdasarkan model bahaya gempa, model kerentanan dan model keterpaparan. Data <em>intensity fields</em> hasil pengolahan <em>stochastic event set</em> dan <em>ground motion field calculator</em> sebelumnya adalah model bahaya yang menjadi salah satu input model risiko. Sehingga persamaan matematis untuk menghitung <em>annual rate of exceeding</em> dari tingkat kerugian &lambda;(L&gt;l) adalah sebagai berikut (Silva, 2018):</p>
+            <div class="text-center">
+              <img class="img-fluid" src="{% static 'images/hazard-3.png' %}">
+            </div>
+            <p>&nbsp;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // var table = $("#datatable").DataTable({
+  //   order: [[ 0, 'desc' ]],
+  //   pageLength: 50,
+  // });
+});
+</script>
+{% endblock %}

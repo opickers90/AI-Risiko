@@ -1,0 +1,184 @@
+{% load i18n %}
+
+<nav class="main-navbar">
+  <div class="container">
+    <ul>
+      <li class="menu-item">
+        <a href="{% url 'home' %}" class="menu-link">
+          <span><i class="bi bi-house-door-fill"></i> {% translate "Home" %}</span>
+        </a>
+      </li>
+
+      {% if request.user.is_authenticated %}
+      <!--
+      <li class="menu-item">
+        <a href="{% url 'dashboard:index' %}" class="menu-link">
+          <span><i class="bi bi-map-fill"></i> {% translate "Dashboard" %}</span>
+        </a>
+      </li>
+      -->
+
+      <li class="menu-item has-sub">
+        <a href="javascript:void(0);" class="menu-link">
+          <span><i class="bi bi-buildings-fill"></i> {% translate "Exposure" %}</span>
+        </a>
+        <div class="submenu">
+          <div class="submenu-group-wrapper">
+            <ul class="submenu-group">
+              <li class="submenu-item has-sub">
+                <a href="{% url 'dashboard:assetupload-list' %}" class="submenu-link">{% translate "Assets" %}</a>
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="{% url 'dashboard:assetupload-create' %}" class="subsubmenu-link">{% translate "Import Assets" %}</a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="submenu-item has-sub">
+                <a href="{% url 'dashboard:exposureupload-list' %}" class="submenu-link">{% translate "Exposure" %}</a>
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="{% url 'dashboard:exposureupload-create' %}" class="subsubmenu-link">{% translate "Import Exposure" %}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="menu-item has-sub">
+        <a href="javascript:void(0);" class="menu-link">
+          <span><i class="wi wi-earthquake"></i> {% translate "Hazard" %}</span>
+        </a>
+        <div class="submenu">
+          <div class="submenu-group-wrapper">
+            <ul class="submenu-group">
+              <li class="submenu-item">
+                <a href="{% url 'dashboard:hazard-list' %}" class="submenu-link">{% translate "Hazard" %}</a>
+                <!--
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="javascript:void(0);" class="subsubmenu-link">{% translate "Add Hazard" %}</a>
+                  </li>
+                </ul>
+                -->
+              </li>
+
+              <li class="submenu-item">
+                <a href="{% url 'dashboard:event-list' %}" class="submenu-link">{% translate "Event" %}</a>
+                <!--
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="javascript:void(0);" class="subsubmenu-link">{% translate "Add Event" %}</a>
+                  </li>
+                </ul>
+                -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="menu-item has-sub">
+        <a href="javascript:void(0);" class="menu-link">
+          <span><i class="bi bi-exclamation-triangle-fill"></i> {% translate "Vulnerability" %}</span>
+        </a>
+        <div class="submenu">
+          <div class="submenu-group-wrapper">
+            <ul class="submenu-group">
+              <li class="submenu-item">
+                <a href="{% url 'dashboard:vulnerability-list' %}" class="submenu-link">{% translate "Vulnerability" %}</a>
+                <!--
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="javascript:void(0);" class="subsubmenu-link">{% translate "Add Vulnerability" %}</a>
+                  </li>
+                </ul>
+                -->
+              </li>
+              <li class="submenu-item has-sub">
+                <a href="javascript:void(0);" class="submenu-link">{% translate "Tools" %}</a>
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="{% url 'vulnerabilityinformation-list' %}" class="subsubmenu-link">{% translate "Vulnerability Information" %}</a>
+                  </li>
+                  <li class="subsubmenu-item">
+                    <a href="http://ai.risiko.id:8800/ipt/" target="_blank" class="subsubmenu-link">{% translate "Input Preparation Toolkit" %}</a>
+                  </li>
+                  <li class="subsubmenu-item">
+                    <a href="http://ai.risiko.id:8800/taxtweb/" target="_blank" class="subsubmenu-link">{% translate "TaxtWEB" %}</a>
+                  </li>
+                  <li class="subsubmenu-item">
+                    <a href="http://ai.risiko.id:8800/taxonomy/" target="_blank" class="subsubmenu-link">{% translate "Taxonomy" %}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="menu-item has-sub">
+        <a href="javascript:void(0);" class="menu-link">
+          <span><i class="bi bi-speedometer"></i> {% translate "Risk" %}</span>
+        </a>
+        <div class="submenu">
+          <div class="submenu-group-wrapper">
+            <ul class="submenu-group">
+              <li class="submenu-item has-sub">
+                <a href="{% url 'dashboard:openquakejob-list' %}" class="submenu-link">{% translate "Risk Calculation" %}</a>
+                <ul class="subsubmenu">
+                  <li class="subsubmenu-item">
+                    <a href="{% url 'dashboard:openquakejob-create' %}" class="subsubmenu-link">{% translate "New Risk Calculation" %}</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="submenu-item">
+                <a href="{% url 'dashboard:risk-matrix-list' %}" class="submenu-link">{% translate "Risk Matrix" %}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+
+      <li class="menu-item has-sub">
+        <a href="javascript:void(0);" class="menu-link">
+          <span><i class="bi bi-plus-circle-fill"></i> {% translate "More" %}</span>
+        </a>
+        <div class="submenu">
+          <div class="submenu-group-wrapper">
+            <ul class="submenu-group">
+              <li class="submenu-item">
+                <a href="{% url 'about' %}" class="submenu-link">{% translate "About AI Risiko" %}</a>
+              </li>
+              <li class="submenu-item">
+                <a href="{% url 'dashboard:documents' %}" class="submenu-link">{% translate "Documents" %}</a>
+              </li>
+              <li class="submenu-item">
+                <a href="{% url 'api-docs' %}" class="submenu-link">{% translate "API Documentation" %}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+      {% endif %}
+
+      {% if not request.user.is_authenticated and ACCOUNT_ALLOW_REGISTRATION %}
+      <li class="menu-item">
+        <a href="{% url 'account_signup' %}" class="menu-link">
+          <span><i class="bi bi-pencil-square"></i> {% translate "Sign Up" %}</span>
+        </a>
+      </li>
+      {% endif %}
+
+      {% if not request.user.is_authenticated %}
+      <li class="menu-item">
+        <a href="{% url 'newdashboard:login' %}" class="menu-link">
+          <span><i class="bi bi-person-circle"></i> {% translate "Sign In" %}</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

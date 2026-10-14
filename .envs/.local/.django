@@ -1,0 +1,42 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=celery
+CELERY_FLOWER_PASSWORD=celery
+
+# if true force celery to reload workers on file changes
+# workaround for dev server on docker+wsl https://stackoverflow.com/a/75404803
+WATCHFILES_FORCE_POLLING=true
+
+# Ai Risiko
+# ------------------------------------------------------------------------------
+# secret django admin
+# DJANGO_ADMIN_URL=secretadm1n/
+
+# max file upload size in megabytes
+MAX_FILE_UPLOAD_MB=100
+
+# valid time period for creating openquake jobs (for non superuser)
+OPENQUAKE_JOB_PERIOD_ENABLE=True
+OPENQUAKE_JOB_PERIOD_START_HOUR=7
+OPENQUAKE_JOB_PERIOD_END_HOUR=18
+
+# openquake server instance details
+OPENQUAKE_BASE_URL=http://192.168.0.115:8800
+# openquake-docker default admin user
+OPENQUAKE_ADMIN_LOGIN=adminoq
+OPENQUAKE_ADMIN_PASSWORD=adminopenquake
+
+# aws iam user for managing ec2 resources
+EC2_AWS_REGION=
+EC2_AWS_ACCESS_KEY_ID=
+EC2_AWS_SECRET_ACCESS_KEY=

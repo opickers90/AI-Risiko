@@ -1,0 +1,54 @@
+{% extends "newdashboard/assetupload_list.html" %}
+
+{% load static i18n crispy_forms_tags %}
+
+{% block title %}{% translate "Delete Assets" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "Delete Assets" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "Delete Assets" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "Delete Assets" %}: {{ object.name }}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          {% blocktranslate %}The imported Assets listed below will also be deleted{% endblocktranslate %}:
+        </p>
+        <ul>
+          <li><a target="_blank" href="{% url 'newdashboard:assetupload-detail' object.id %}">{{ object.name }}</a></li>
+        </ul>
+        <form action="" method="post">
+          {% csrf_token %}
+          <input class="btn btn-danger" type="submit" value="{% trans 'Delete' %}">
+          <a class="btn btn-light-secondary" href="{% url 'newdashboard:assetupload-list' %}">{% trans "Cancel" %}</a>
+        </form>
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript_extra %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $("form").submit(function() {
+    $("input[type='submit']").attr("disabled", true);
+    return true;
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "dashboard/index.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Event" %} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                {% airisiko_active_url request "dashboard:event-list" as active_url %}
+                <li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+                  {% if active_url %}
+                  {% translate "Event" %}
+                  {% else %}
+                  <a href="{% url 'dashboard:event-list' %}">{% translate "Event" %}</a>
+                  {% endif %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Event" %}
+            </h1>
+          </div>
+          <div class="card-body">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // var table = $("#datatable").DataTable({
+  //   order: [[ 0, 'desc' ]],
+  //   pageLength: 50,
+  // });
+});
+</script>
+{% endblock %}

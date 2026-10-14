@@ -1,0 +1,49 @@
+{% extends "dashboard/index.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                <li class="breadcrumb-item active" aria-current="page">
+                  {% translate "Test" %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Test" %}
+            </h1>
+          </div>
+          <div class="card-body">
+            <form action="" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="a" value="1">
+              <input class="btn btn-primary" type="submit" value="{% translate 'Submit' %}">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $("form").submit(function() {
+    $("input[type='submit']").attr("disabled", true);
+    return true;
+  });
+});
+</script>
+{% endblock %}

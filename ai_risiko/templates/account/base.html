@@ -1,0 +1,24 @@
+{% extends "ai_risiko/base.html" %}
+
+{% block title %}{% block head_title %}{% endblock head_title %} - {{ block.super }}{% endblock title %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                {{ form.errors }}
+            </div>
+            {% endif %}
+            {% block inner %}{% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

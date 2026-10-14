@@ -1,0 +1,42 @@
+{% load static i18n %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <title>{{ object.title }}</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+  <link rel="stylesheet" href="{% static 'vendors/fontawesome-free/css/all.min.css' %}">
+
+  <link
+    rel="shortcut icon"
+    href="{% static 'vendors/adminlte/img/AdminLTELogo.png' %}"
+    type="image/png"
+  />
+
+  <style>
+    body {
+    margin: 0;
+    font-family: "Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+  }
+  </style>
+</head>
+
+<body>
+{% if object.format == "TEXT" %}
+{{ object.content }}
+{% elif object.format == "HTML" %}
+{{ object.content|safe }}
+{% endif %}
+
+<div style="position:absolute;top:0px;left:50px;font-size:25px;"><a style="color:#078aa3;" href="{% url 'newdashboard:index' %}" target="_blank" title="Perform Calculation"><i class="fas fa-external-link-alt"></i></a></div>
+</body>
+</html>

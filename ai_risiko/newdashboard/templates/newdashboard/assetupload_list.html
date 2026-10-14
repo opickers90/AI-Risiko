@@ -1,0 +1,112 @@
+{% extends "newdashboard/index.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Assets" %} - {{ block.super }}{% endblock title %}
+
+{% block css_extra %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block page_title %}{% translate "Assets" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+{% airisiko_active_url request "newdashboard:assetupload-list" as active_url %}
+<li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+  {% if active_url %}
+  {% translate "Assets" %}
+  {% else %}
+  <a href="{% url 'newdashboard:assetupload-list' %}">{% translate "Assets" %}</a>
+  {% endif %}
+</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "Assets" %}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        {% blocktranslate %}
+        <p>List of Asset imports from CSV files.</p>
+        <p class="m-0">The following actions are available:</p>
+        <ul>
+          <li>View the detail list of imported Assets</li>
+          <li>Download the CSV file import source</li>
+          <li>Delete imported Assets</li>
+        </ul>
+        {% endblocktranslate %}
+        <table class="table table-striped dt-responsive nowrap" style="width:100%" id="datatable">
+          <thead>
+            <tr>
+              <th>{% translate "ID" %}</th>
+              <th>{% translate "Name" %}</th>
+              <th>{% translate "Created" %}</th>
+              <th>{% translate "User" %}</th>
+              <th>{% translate "CSV File" %}</th>
+              <th>{% translate "Import Status" %}</th>
+              <th>{% translate "Actions" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for assetupload in object_list %}
+            <tr>
+              <td title="{% translate 'ID' %}">
+                {{ assetupload.id }}
+              </td>
+              <td>
+                <a href="{% url 'newdashboard:assetupload-detail' assetupload.id %}" title="{% translate 'View details' %}">{{ assetupload.name|default:"-" }}</a>
+              </td>
+              <td title="{% translate 'Date created' %}">
+                {{ assetupload.created }}
+              </td>
+              <td title="{% translate 'Creator' %}">
+                {{ assetupload.user|default:"-" }}
+              </td>
+              <td>
+                <a href="{{ assetupload.file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ assetupload.file|airisiko_filename }}</a>
+              </td>
+              <td title="{% translate 'Import status' %}">
+                {% if assetupload.import_status == True %}
+                <span class="badge bg-success">{% translate "Success" %}</span>
+                {% elif assetupload.import_status == False %}
+                <span class="badge bg-danger">{% translate "Failed" %}</span>
+                {% else %}
+                <span class="badge bg-light-secondary">{% translate "In Progress" %}</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'newdashboard:assetupload-delete' assetupload.id %}" class="btn icon btn-sm btn-danger" title="{% translate 'Delete' %}"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var table = $("#datatable").DataTable({
+    order: [[ 0, 'desc' ]],
+    pageLength: 50,
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "mazer/layout_horizontal.html" %}
+
+{% load static %}
+
+{% block header_top %}
+{% include "ai_risiko/includes/header_top.html" %}
+{% endblock %}
+
+{% block main_navbar %}
+{% include "ai_risiko/includes/main_navbar.html" %}
+{% endblock %}
+
+{% block page %}
+<div class="page-content">
+  {% block content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include "ai_risiko/includes/footer.html" %}
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'vendors/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendors/mazer/assets/js/bootstrap.js' %}"></script>
+<script src="{% static 'vendors/mazer/assets/js/app.js' %}"></script>
+<script src="{% static 'vendors/mazer/assets/js/pages/horizontal-layout.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "ai_risiko/base.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "Home" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h1>
+              {% if request.user.is_authenticated %}
+              {% blocktranslate with username=request.user.username %}Welcome, {{ username }}!{% endblocktranslate %}
+              {% else %}
+              {% translate "Welcome!" %}
+              {% endif %}
+            </h1>
+          </div>
+          <div class="card-body">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

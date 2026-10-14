@@ -1,0 +1,43 @@
+{% extends "ai_risiko/base.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "User" %}: {{ object.username }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <h2>{{ object.username }}</h2>
+                <p></p>
+                {% if object.name %}
+                  <p>{{ object.name }}</p>
+                {% endif %}
+                <p>{% translate "Risk Calculation quota" %}: {{ openquake_completed_jobs }} / {{ object.openquakejob_quota|default:"-" }}</p>
+              </div>
+            </div>
+            {% if object == request.user %}
+            <!-- Action buttons -->
+            <div class="row">
+
+              <div class="col-sm-12">
+                <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">{% translate "My Info" %}</a>
+                <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">{% translate "E-mail" %}</a>
+                <!-- Your Stuff: Custom user template urls -->
+              </div>
+
+            </div>
+            <!-- End Action buttons -->
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends "newdashboard/index.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "My Profile" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "My Profile" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "My Profile" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "My Profile" %}: {{ user.get_username }}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+export WORKING_DIR=
+export WEBHOOK_SECRET=
+export WEBHOOK_HOOKS_DIR=
+export WEBHOOK_BRANCH_LIST=
+export GIT_USER=
+export GIT_PASSWORD=
+export NOTIFY_EMAIL_ADDRESS=
+export NOTIFY_EMAIL_ADDRESS_2=

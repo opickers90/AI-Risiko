@@ -1,0 +1,95 @@
+{% extends "dashboard/index.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Risk Matrix" %} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                {% airisiko_active_url request "dashboard:risk-matrix-list" as active_url %}
+                <li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+                  {% if active_url %}
+                  {% translate "Risk Matrix" %}
+                  {% else %}
+                  <a href="{% url 'dashboard:risk-matrix-list' %}">{% translate "Risk Matrix" %}</a>
+                  {% endif %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Risk Matrix" %}
+            </h1>
+          </div>
+          <div class="card-body">
+            {% blocktranslate %}
+            <p>View Risk Matrix of completed Risk Calculation jobs.</p>
+            {% endblocktranslate %}
+            <table id="datatable" class="table table-striped dt-responsive nowrap" style="width:100%">
+              <thead>
+                <tr>
+                  <th>{% translate "ID" %}</th>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Created" %}</th>
+                  <th>{% translate "Creator" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for openquakejob in object_list %}
+                {% if openquakejob.job_status == "complete" %}
+                {% airisiko_openquakejob_has_risk_matrix openquakejob as has_risk_matrix %}
+                {% endif %}
+                {% if has_risk_matrix %}
+                <tr>
+                  <td title="{% translate 'ID' %}">
+                    {{ openquakejob.id }}
+                  </td>
+                  <td title="{% translate 'Name' %}">
+                    <a href="{% url 'dashboard:risk-matrix-detail' openquakejob.id %}" title="{% translate 'View Risk Matrix' %}">{{ openquakejob.name|default:"-" }}</a>
+                  </td>
+                  <td title="{% translate 'Created' %}">
+                    {{ openquakejob.created }}
+                  </td>
+                  <td title="{% translate 'Creator' %}">
+                    {{ openquakejob.user|default:"-" }}
+                  </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var table = $("#datatable").DataTable({
+    order: [[ 0, 'desc' ]],
+    pageLength: 50,
+  });
+});
+</script>
+{% endblock %}

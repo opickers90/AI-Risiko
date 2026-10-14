@@ -1,0 +1,97 @@
+{% extends "newdashboard/index.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "Calculate Risk" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "Calculate Risk" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "Calculate Risk" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "Calculate Risk" %}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <!--
+          <button type="button" class="btn btn-tool" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+          </button>
+          -->
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="m-0">
+          {% blocktranslate %}Input geospatial data related to hazards, vulnerability, exposure, and other relevant information to initiate the risk calculation process.{% endblocktranslate %}
+        </p>
+      </div>
+      <!--
+      <div class="card-footer clearfix">
+        <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">{% translate "Previous" %}</a>
+        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">{% translate "Next" %}</a>
+      </div>
+        -->
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <!-- <div class="card-header">
+        <h3 class="card-title">{% translate "Hazard Data" %}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div> -->
+      <div class="card-body">
+        <div class="card mb-2 bg-gradient-dark">
+          <img class="card-img-top" src="{% static 'images/earthquake.jpg' %}" alt="Hazard">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h5 class="card-title text-primary text-white">{% translate "Hazard" %}</h5>
+            <!-- <p class="card-text text-white pb-2 pt-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.</p> -->
+            <a href="{% url 'newdashboard:calculate_hazard' %}" class="text-white">{% translate "View hazards" %} &raquo;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="card mb-2 bg-gradient-dark">
+          <img class="card-img-top" src="{% static 'images/flooding.jpg' %}" alt="Exposure">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h5 class="card-title text-primary text-white">{% translate "Exposure" %}</h5>
+            <!-- <p class="card-text text-white pb-2 pt-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.</p> -->
+            <a href="#" class="text-white">{% translate "View exposure" %} &raquo;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="card mb-2 bg-gradient-dark">
+          <img class="card-img-top" src="{% static 'images/wildfire.jpg' %}" alt="Vulnerability">
+          <div class="card-img-overlay d-flex flex-column justify-content-end">
+            <h5 class="card-title text-primary text-white">{% translate "Vulnerability" %}</h5>
+            <!-- <p class="card-text text-white pb-2 pt-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor.</p> -->
+            <a href="#" class="text-white">{% translate "View vulnerability" %} &raquo;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

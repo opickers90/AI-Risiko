@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=ai_risiko
+POSTGRES_USER=buCvSEmfSDUtugnUxRrCWsEVAsQmBdJg
+POSTGRES_PASSWORD=bSRlFb37yvDPoCGEOp57RUa1XMTe29tWk08n8L3b6Fp9JXGE6OuzpnCXuOdoXRbN

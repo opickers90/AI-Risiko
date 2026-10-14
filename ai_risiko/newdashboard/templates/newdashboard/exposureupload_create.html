@@ -1,0 +1,63 @@
+{% extends "newdashboard/exposureupload_list.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Import Exposure" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "Import Exposure" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "Import Exposure" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "Import Exposure" %}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          {% blocktranslate %}Use the form below to import Exposure from a CSV file.{% endblocktranslate %} <a href="{% static 'exposuretemplate/v1/exposure.csv' %}" target="_blank">[{% trans "Download Template" %}]</a>
+        </p>
+        <p>
+          <small>
+            {% blocktranslate %}Accepted file formats{% endblocktranslate %}:<strong> .csv | .zip</strong>
+            <br>
+            {% blocktranslate %}File upload size limit{% endblocktranslate %}: <strong>{% airisiko_settings_value "MAX_FILE_UPLOAD_MB" %} MB</strong>
+            <br>
+            {% blocktranslate %}Note: Only the first .csv file in the .zip archive will be processed.{% endblocktranslate %}
+            <br>
+            {% blocktranslate %}Fields marked with * are mandatory{% endblocktranslate %}
+          </small>
+        </p>
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <input class="btn btn-primary" type="submit" value="{% trans 'Submit' %}">
+          <a class="btn btn-light" href="{% url 'dashboard:exposureupload-list' %}">{% trans "Cancel" %}</a>
+        </form>
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript_extra %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $("form").submit(function() {
+    $("input[type='submit']").attr("disabled", true);
+    return true;
+  });
+});
+</script>
+{% endblock %}

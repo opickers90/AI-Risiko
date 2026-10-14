@@ -1,0 +1,51 @@
+{% extends "dashboard/index.html" %}
+
+{% load static i18n airisiko_tags %}
+
+{% block title %}{% translate "Documents" %} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                {% airisiko_active_url request "dashboard:documents" as active_url %}
+                <li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+                  {% if active_url %}
+                  {% translate "Documents" %}
+                  {% else %}
+                  <a href="{% url 'dashboard:documents' %}">{% translate "Documents" %}</a>
+                  {% endif %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Documents" %}
+            </h1>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><a href="{% static 'documents/Buku Manual AI.Risiko Versi-1.pdf' %}" title="{% translate 'Download User Manual (Version 1)' %}" target="_blank">{% translate "User Manual (Version 1)" %}</a></li>
+            </ul>
+            <p>&nbsp;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+{% endblock %}

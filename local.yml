@@ -1,0 +1,127 @@
+version: '3'
+
+volumes:
+  ai_risiko_local_postgres_data: {}
+  ai_risiko_local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: ai_risiko_local_django
+    container_name: ai_risiko_local_django
+    depends_on:
+      - postgres
+      - redis
+      # - mailhog
+      - mailpit
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      # - "8000:8000"
+      - "8001:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: ai_risiko_production_postgres
+    container_name: ai_risiko_local_postgres
+    volumes:
+      - ai_risiko_local_postgres_data:/var/lib/postgresql/data
+      - ai_risiko_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "6543:5432"
+
+  docs:
+    image: ai_risiko_local_docs
+    container_name: ai_risiko_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./ai_risiko:/app/ai_risiko:z
+    ports:
+      - "9000:9000"
+    command: /start-docs
+
+  # mailhog:
+  #   image: mailhog/mailhog:v1.0.0
+  #   container_name: ai_risiko_local_mailhog
+  #   ports:
+  #     - "8025:8025"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: ai_risiko_local_mailpit
+    ports:
+      - "8025:8025"
+
+  redis:
+    image: redis:6
+    container_name: ai_risiko_local_redis
+
+  celeryworker:
+    <<: *django
+    image: ai_risiko_local_celeryworker
+    container_name: ai_risiko_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+      # - mailhog
+      - mailpit
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: ai_risiko_local_celerybeat
+    container_name: ai_risiko_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+      # - mailhog
+      - mailpit
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: ai_risiko_local_flower
+    container_name: ai_risiko_local_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower
+
+  oqceleryworker:
+    <<: *django
+    image: ai_risiko_local_oqceleryworker
+    container_name: ai_risiko_local_oqceleryworker
+    depends_on:
+      - redis
+      - postgres
+      - mailpit
+    ports: []
+    command: /start-oqceleryworker
+
+  lowceleryworker:
+    <<: *django
+    image: ai_risiko_local_lowceleryworker
+    container_name: ai_risiko_local_lowceleryworker
+    depends_on:
+      - redis
+      - postgres
+      - mailpit
+    ports: []
+    command: /start-lowceleryworker

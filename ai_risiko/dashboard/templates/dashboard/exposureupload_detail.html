@@ -1,0 +1,255 @@
+{% extends "dashboard/exposureupload_list.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags leaflet_tags %}
+
+{% block title %}{{ object.name|default:"-" }} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+
+{% leaflet_css %}
+
+<style type="text/css">
+.dataTables_wrapper {
+  margin-bottom: 1rem;
+}
+
+.leaflet-container {
+  min-height: 500px;
+}
+
+.leaflet-default-icon-path {
+    background-image: url("https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png");
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                <li class="breadcrumb-item active" aria-current="page">
+                  {{ object.name|default:"-" }}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Exposure" %}: {{ object.name|default:"-" }}
+            </h1>
+          </div>
+          <div class="card-body">
+            <div class="btn-group dropdown mb-4">
+              <button type="button" class="btn btn-primary">
+                {% translate "Exposure Details" %}
+              </button>
+              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                <span class="sr-only">{% translate "Options" %}</span>
+              </button>
+              {% if object.import_status == True %}
+              {% airisiko_exposure_has_recapitulation object as has_exposure_recapitulation %}
+              {% if has_exposure_recapitulation %}
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'dashboard:exposure-recapitulation' object.id %}">{% translate "View Exposure Recapitulation" %}</a>
+              </div>
+              {% endif %}
+              {% endif %}
+            </div>
+            {% if object.assets.all.count > 100 %}
+            <div class="alert alert-warning">
+              {% blocktranslate with all_records_count=object.assets.all.count %}Found {{ all_records_count }} entries total. Limiting to first 100 entries.{% endblocktranslate %}
+            </div>
+            {% endif %}
+            <h2 id="map" class="mb-0">{% translate "Map" %}</h2>
+            <hr class="mt-0">
+            {% leaflet_map "assets_map" callback="window.assets_map_init" %}
+            <br>
+            <h2 id="exposure" class="mb-0">{% translate "Exposure" %}</h2>
+            <hr class="mt-0">
+            {% blocktranslate %}
+            <p>List of imported Exposure.</p>
+            {% endblocktranslate %}
+            <table class="table table-striped dt-responsive nowrap" style="width:100%" id="datatable">
+              <thead>
+                <tr>
+                  <th>{% translate "ID" %}</th>
+                  <th>{% translate "CSV ID" %}</th>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Taxonomy" %}</th>
+                  <th>{% translate "Structural" %}</th>
+                  <th>{% translate "Material" %}</th>
+                  <th>{% translate "Occupancy" %}</th>
+                  <th>{% translate "LLRS" %}</th>
+                  <th>{% translate "Code" %}</th>
+                  <th>{% translate "Height" %}</th>
+                  <th>{% translate "Night" %}</th>
+                  <th>{% translate "Kabupaten/Kota" %}</th>
+                  <th>{% translate "Coordinate (Latitude, Longitude)" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for asset in object.assets.all|slice:":100" %}
+                <tr>
+                  <td title="{% translate 'ID' %}">
+                    {{ asset.id }}
+                  </td>
+                  <td title="{% translate 'CSV ID' %}">
+                    {{ asset.csv_id|default:"-" }}
+                  </td>
+                  <td>
+                    {{ asset.name|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Taxonomy' %}">
+                    {{ asset.taxonomy|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Structural' %}">
+                    {{ asset.structural|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Material' %}">
+                    {{ asset.material|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Occupancy' %}">
+                    {{ asset.occupancy|default:"-" }}
+                  </td>
+                  <td title="{% translate 'LLRS' %}">
+                    {{ asset.llrs|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Code' %}">
+                    {{ asset.code|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Height' %}">
+                    {{ asset.height|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Night' %}">
+                    {{ asset.night|default:"-" }}
+                  </td>
+                  <td title="{% translate 'Kabupaten/Kota' %}">
+                    {{ asset.kabupaten_kota|default:"-" }}
+                  </td>
+                  <td>
+                    {% if asset.point %}
+                    <a href="https://www.google.com/maps/place/{{ asset.point.1 }},{{ asset.point.0 }}" target="_blank" title="{% translate 'View coordinate in map' %}">{{ asset.point.1 }}, {{ asset.point.0 }}</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+{% leaflet_js %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var table = $("#datatable").DataTable({
+    pageLength: 50,
+  });
+});
+
+function assets_map_init(map) {
+  var group = new L.featureGroup();
+  {% for asset in object.assets.all|slice:":100" %}
+  var popupContent_{{ forloop.counter0 }} = `
+  <table class="table table-striped table-bordered">
+  <tbody>
+  <tr>
+  <th>{% translate "ID" %}</th>
+  <td>{{ asset.id }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "CSV ID" %}</th>
+  <td>{{ asset.csv_id|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Name" %}</th>
+  <td>{{ asset.name|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Structural" %}</th>
+  <td>{{ asset.structural|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Material" %}</th>
+  <td>{{ asset.material|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Occupancy" %}</th>
+  <td>{{ asset.occupancy|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "LLRS" %}</th>
+  <td>{{ asset.llrs|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Code" %}</th>
+  <td>{{ asset.code|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Height" %}</th>
+  <td>{{ asset.height|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Night" %}</th>
+  <td>{{ asset.night|default:"-" }}</td>
+  </tr>
+  <tr>
+  <tr>
+  <th>{% translate "Kabupaten/Kota" %}</th>
+  <td>{{ asset.kabupaten_kota|default:"-" }}</td>
+  </tr>
+  <tr>
+  <th>{% translate "Coordinate (Latitude, Longitude)" %}</th>
+  <td>
+    {% if asset.point %}
+    <a href="https://www.google.com/maps/place/{{ asset.point.1 }},{{ asset.point.0 }}" target="_blank" title="{% translate 'View coordinate in map' %}">{{ asset.point.1 }}, {{ asset.point.0 }}</a>
+    {% else %}
+    -
+    {% endif %}
+  </td>
+  </tr>
+  </tbody>
+  </table>
+  `;
+
+  {% if asset.point %}
+  var pointLayer_{{ forloop.counter0 }} = L.geoJson({{ asset.point.geojson|safe }}).addTo(map);
+  pointLayer_{{ forloop.counter0 }}.bindPopup(popupContent_{{ forloop.counter0 }});
+  group.addLayer(pointLayer_{{ forloop.counter0 }});
+  {% endif %}
+
+  if (typeof pointLayer_{{ forloop.counter0 }} !== 'undefined') {
+    var pointBounds = pointLayer_{{ forloop.counter0 }}.getBounds();
+    var pointCenter = pointBounds.getCenter();
+    map.setZoom(16);
+    map.panTo(pointCenter);
+  }
+  {% endfor %}
+
+  if (group.getLayers().length) {
+    map.fitBounds(group.getBounds());
+  } else {
+    map.setView([-2, 118.5], 5);
+  }
+}
+</script>
+{% endblock %}

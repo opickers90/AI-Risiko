@@ -1,0 +1,46 @@
+{% extends "newdashboard/index.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "About" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "About" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "About" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "About" %}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <!--
+          <button type="button" class="btn btn-tool" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+          </button>
+          -->
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          {% blocktranslate %}AI Risiko is a platform for ...{% endblocktranslate %}
+        </p>
+        <p>&nbsp;</p>
+      </div>
+      <!--
+      <div class="card-footer clearfix">
+        <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">{% translate "Previous" %}</a>
+        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">{% translate "Next" %}</a>
+      </div>
+        -->
+    </div>
+  </div>
+</div>
+{% endblock %}

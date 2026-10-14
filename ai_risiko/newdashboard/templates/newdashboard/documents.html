@@ -1,0 +1,35 @@
+{% extends "newdashboard/index.html" %}
+
+{% load static i18n %}
+
+{% block title %}{% translate "Documents" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "Documents" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "Documents" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "Documents" %}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><a href="{% static 'documents/Buku Manual AI.Risiko Versi-1.pdf' %}" title="{% translate 'Download User Manual (Version 1)' %}" target="_blank">{% translate "User Manual (Version 1)" %}</a></li>
+        </ul>
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

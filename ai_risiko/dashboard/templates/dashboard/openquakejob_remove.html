@@ -1,0 +1,51 @@
+{% extends "dashboard/openquakejob_list.html" %}
+
+{% load static i18n crispy_forms_tags %}
+
+{% block title %}{% translate "Remove Risk Calculation" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                <li class="breadcrumb-item active" aria-current="page">
+                  {% translate "Remove Risk Calculation" %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Remove the Risk Calculation job" %}: {{ object.name }}
+            </h1>
+          </div>
+          <div class="card-body">
+            <form action="" method="post">
+              {% csrf_token %}
+              <input class="btn btn-danger" type="submit" value="{% trans 'Remove' %}">
+              <a class="btn btn-light-secondary" href="{% url 'dashboard:openquakejob-list' %}">{% trans "Cancel" %}</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script type="text/javascript">
+$(document).ready(function() {
+  $("form").submit(function() {
+    $("input[type='submit']").attr("disabled", true);
+    return true;
+  });
+});
+</script>
+{% endblock %}

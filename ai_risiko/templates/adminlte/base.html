@@ -1,0 +1,108 @@
+{% load static i18n %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AI Risiko{% endblock title %}</title>
+
+  {% block css %}
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{% static 'vendors/fontawesome-free/css/all.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'vendors/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <!-- flag-icon-css -->
+  <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}">
+  <!-- weather-icons -->
+  <link rel="stylesheet" href="{% static 'vendors/weather-icons/css/weather-icons.min.css' %}" />
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'vendors/adminlte/css/adminlte.min.css' %}">
+  {% endblock %}
+
+    <link
+    rel="shortcut icon"
+    href="{% static 'vendors/adminlte/img/AdminLTELogo.png' %}"
+    type="image/png"
+  />
+
+  {% block css_extra %}{% endblock %}
+</head>
+{% comment %}disable .layout-footer-fixed class to use multiline footer{% endcomment %}
+<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed {% comment %}layout-footer-fixed{% endcomment %}">
+{% block body %}
+<div class="wrapper">
+  <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__wobble" src="{% static 'vendors/adminlte/img/AdminLTELogo.png' %}" alt="AdminLTELogo" height="60" width="60">
+  </div>
+
+  {% block navbar %}
+  {% endblock %}
+
+  {% block sidebar %}
+  {% endblock %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    {% block content_header %}
+    {% endblock %}
+
+    {% if messages %}
+      <div class="content">
+
+          {% for message in messages %}
+          <div class="alert alert-dismissible {% if message.tags %}{% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %}{% endif %}">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h5><i class="icon fas fa-{% if message.tags %}{% if message.tags == 'error' %}ban{% elif message.tags == 'success' %}check{% elif message.tags == 'warning' %}exclamation-triangle{% else %}{{ message.tags }}{% endif %}{% endif %}"></i>{{ message }}</h5>
+          </div>
+          {% endfor %}
+
+      </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+  </div>
+  <!-- /.content-wrapper -->
+
+  {% block footer %}
+  {% endblock %}
+</div>
+<!-- ./wrapper -->
+
+{% block javascript %}
+<!-- REQUIRED SCRIPTS -->
+<!-- jQuery -->
+<script src="{% static 'vendors/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap -->
+<script src="{% static 'vendors/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'vendors/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'vendors/adminlte/js/adminlte.js' %}"></script>
+
+<!-- PAGE PLUGINS -->
+<!-- jQuery Mapael -->
+<script src="{% static 'vendors/jquery-mousewheel/jquery.mousewheel.js' %}"></script>
+<script src="{% static 'vendors/raphael/raphael.min.js' %}"></script>
+<script src="{% static 'vendors/jquery-mapael/jquery.mapael.min.js' %}"></script>
+<script src="{% static 'vendors/jquery-mapael/maps/usa_states.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'vendors/chart.js/Chart.min.js' %}"></script>
+
+{% comment %}
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'vendors/adminlte/js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'vendors/adminlte/js/pages/dashboard2.js' %}"></script>
+{% endcomment %}
+{% endblock %}
+
+{% block javascript_extra %}{% endblock %}
+
+{% endblock %}
+</body>
+</html>

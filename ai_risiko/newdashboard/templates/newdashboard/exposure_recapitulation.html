@@ -1,0 +1,124 @@
+{% extends "newdashboard/exposureupload_list.html" %}
+
+{% load humanize static i18n airisiko_tags %}
+
+{% block title %}{{ exposureupload.name|default:"-" }} ({% translate "Recapitulation" %}) - {{ block.super }}{% endblock title %}
+
+{% block css_extra %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block page_title %}{{ exposureupload.name|default:"-" }} ({% translate "Recapitulation" %}){% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{{ exposureupload.name|default:"-" }} ({% translate "Recapitulation" %})</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% translate "Exposure Recapitulation" %}: {{ exposureupload.name|default:"-" }}</h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="btn-group mb-4">
+          <button type="button" class="btn btn-info">{% translate "Exposure Recapitulation | Options" %}</button>
+          <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
+            <span class="sr-only">{% translate "Toggle Dropdown" %}</span>
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'newdashboard:exposureupload-detail' exposureupload.id %}">{% translate "View Exposure Details" %}</a>
+          </div>
+        </div>
+        {% if exposure_national %}
+        <h2 class="mb-0">{% translate "National" %}</h2>
+        <hr class="mt-0">
+        <table class="table table-striped dt-responsive nowrap" style="width:100%" id="">
+          <tbody>
+            <tr>
+              <th>{% translate "Total Exposure" %}</th>
+              <td>{{ currency_code }} {{ exposure_national.total|intcomma }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        {% endif %}
+        {% if exposure_provinces %}
+        <h2 class="mb-0">{% translate "Province" %}</h2>
+        <hr class="mt-0">
+        <table class="table table-striped dt-responsive nowrap" style="width:100%" id="datatable-province">
+          <thead>
+            <tr>
+              <th>{% translate "No." %}</th>
+              <th>{% translate "Province" %}</td>
+              <th>{% translate "Total Exposure" %} ({{ currency_code }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for exposure_province in exposure_provinces %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ exposure_province.province }}</td>
+              <td>{{ exposure_province.total|intcomma }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <br>
+        {% endif %}
+        {% if exposure_cities %}
+        <h2 class="mb-0">{% translate "City" %}</h2>
+        <hr class="mt-0">
+        <table class="table table-striped dt-responsive nowrap" style="width:100%" id="datatable-city">
+          <thead>
+            <tr>
+              <th>{% translate "No." %}</th>
+              <th>{% translate "City" %}</td>
+              <th>{% translate "Total Exposure" %} ({{ currency_code }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for exposure_city in exposure_cities %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ exposure_city.city }}</td>
+              <td>{{ exposure_city.total|intcomma }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <br>
+        {% endif %}
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var tableProvince = $("#datatable-province").DataTable({
+    order: [[ 2, 'desc' ]],
+    pageLength: 50,
+  });
+
+  var tableCity = $("#datatable-city").DataTable({
+    order: [[ 2, 'desc' ]],
+    pageLength: 50,
+  });
+});
+
+</script>
+{% endblock %}

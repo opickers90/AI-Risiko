@@ -1,0 +1,92 @@
+{% load static i18n airisiko_tags %}
+
+<!-- Main Footer -->
+<!-- <footer class="main-footer">
+  <strong>{% airisiko_copyright_years 2023 %} &copy; <a href="{% url 'home' %}">AI Risiko</a></strong>
+  <div class="float-right d-none d-sm-inline-block">
+    <b>{% translate "Version" %}</b> 0.x
+  </div>
+</footer> -->
+
+<footer class="main-footer d-none d-lg-block" role="contentinfo">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6">
+        <h4>{% translate "Contact Us" %}</h4>
+        <ul class="list-unstyled">
+          <li class="text-secondary"><i class="fas fa-home mr-3"></i> Bandung, Indonesia</li>
+          <li class="text-secondary"><i class="fas fa-envelope mr-3"></i> admin@gmail.com</li>
+          <li class="text-secondary"><i class="fas fa-phone mr-3"></i> +62 812 345 678</li>
+          <li class="text-secondary"><i class="fas fa-print mr-3"></i> +62 812 345 679</li>
+        </ul>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <h4>{% translate "Help Center" %}</h4>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-secondary">{% translate "FAQs" %}</a></li>
+          <li><a href="#" class="text-secondary">{% translate "Support Services" %}</a></li>
+          <li><a href="#" class="text-secondary">{% translate "Guides &amp; Tutorials" %}</a></li>
+          <li><a href="#" class="text-secondary">{% translate "Contact Support" %}</a></li>
+        </ul>
+        </div>
+      <div class="col-md-3 col-sm-6">
+        <h4>{% translate "Resources" %}</h4>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-secondary">{% translate "Data Privacy" %}</a></li>
+          <li><a href="#" class="text-secondary">{% translate "Subscription" %}</a></li>
+          <li><a href="#" class="text-secondary">{% translate "Site Map" %} </a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h4>{% translate "Social Media" %}</h4>
+        <!-- Facebook -->
+        <a
+          class="btn btn-sm btn-primary m-1 border-0"
+          style="background-color: #3b5998"
+          href="#!"
+          role="button"
+          ><i class="fab fa-facebook"></i
+        ></a>
+        <!-- Twitter -->
+        <a
+            class="btn btn-sm btn-primary m-1 border-0"
+            style="background-color: #55acee"
+            href="#!"
+            role="button"
+            ><i class="fab fa-twitter"></i
+          ></a>
+        <!-- Instagram -->
+        <a
+            class="btn btn-sm btn-primary m-1 border-0"
+            style="background-color: #ac2bac"
+            href="#!"
+            role="button"
+            ><i class="fab fa-instagram"></i
+          ></a>
+        <!-- Linkedin -->
+        <a
+            class="btn btn-sm btn-primary m-1 border-0"
+            style="background-color: #0082ca"
+            href="#!"
+            role="button"
+            ><i class="fab fa-linkedin-in"></i
+          ></a>
+        <!-- Github -->
+        <a
+            class="btn btn-sm btn-primary m-1 border-0"
+            style="background-color: #333333"
+            href="#!"
+            role="button"
+            ><i class="fab fa-github"></i
+          ></a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 copy">
+        <div class="text-center">
+          {% airisiko_copyright_years 2023 %} &copy; <a href="{% url 'home' %}">AI Risiko</a> {% translate "version" %}</b> 0.x
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

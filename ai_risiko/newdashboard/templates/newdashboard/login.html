@@ -1,0 +1,79 @@
+{% extends "newdashboard/index.html" %}
+
+{% load i18n account socialaccount %}
+
+{% block title %}{% translate "Sign In" %} - {{ block.super }}{% endblock title %}
+
+{% block page_title %}{% translate "Sign In" %}{% endblock %}
+
+{% block breadcrumb %}
+{{ block.super }}
+<li class="breadcrumb-item active">{% translate "Sign In" %}</li>
+{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- <h1>{% translate "Sign In" %}</h1> -->
+
+        {% get_providers as socialaccount_providers %}
+
+        {% if socialaccount_providers %}
+          <p>
+            {% translate "Please sign in with one of your existing third party accounts:" %}
+            {% if ACCOUNT_ALLOW_REGISTRATION %}
+              {% blocktranslate trimmed %}
+                Or, <a href="{{ signup_url }}">sign up</a>
+                for a {{ site_name }} account and sign in below:
+              {% endblocktranslate %}
+            {% endif %}
+          </p>
+
+          <div class="socialaccount_ballot">
+
+            <ul class="socialaccount_providers">
+              {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+            </ul>
+
+            <div class="login-or">{% translate "or" %}</div>
+
+          </div>
+
+          {% include "socialaccount/snippets/login_extra.html" %}
+
+        {% else %}
+          {% if ACCOUNT_ALLOW_REGISTRATION %}
+            <p>
+              {% blocktranslate trimmed %}
+                If you have not created an account yet, then please
+                <a href="{{ signup_url }}">sign up</a> first.
+              {% endblocktranslate %}
+            </p>
+          {% endif %}
+        {% endif %}
+
+        <form class="login" method="POST" action="{% url 'account_login' %}">
+          {% csrf_token %}
+          <div id="div_id_login" class="mb-3">
+            <label for="id_login" class="form-label requiredField">{% translate "Username" %}<span class="asteriskField">*</span> </label> <input type="text" name="login" placeholder="{% translate 'Username' %}" autocomplete="username" maxlength="150" class="textinput form-control" required id="id_login">
+          </div>
+          <div id="div_id_password" class="mb-3">
+            <label for="id_password" class="form-label requiredField">{% translate "Password" %}<span class="asteriskField">*</span> </label> <input type="password" name="password" placeholder="{% translate 'Password' %}" autocomplete="current-password" class="passwordinput form-control" required id="id_password">
+          </div>
+          <div class="mb-3">
+            <div id="div_id_remember" class="mb-3 form-check">
+              <input type="checkbox" name="remember" class="checkboxinput form-check-input" id="id_remember">
+              <label for="id_remember" class="form-check-label">{% translate "Remember Me" %}</label>
+            </div>
+          </div>
+          <input type="hidden" name="next" value="{% url 'newdashboard:redirect_to_promoted_post' %}" />
+          <a class="button" href="{% url 'account_reset_password' %}">{% translate "Forgot Password?" %}</a>
+          <button class="btn btn-primary" type="submit">{% translate "Sign In" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

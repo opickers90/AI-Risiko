@@ -1,0 +1,114 @@
+{% extends "dashboard/index.html" %}
+
+{% load static i18n crispy_forms_tags airisiko_tags %}
+
+{% block title %}{% translate "Exposure" %} - {{ block.super }}{% endblock %}
+
+{% block css_extra %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'vendors/datatables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="row">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                {% block breadcrumbs %}
+                {{ block.super }}
+                {% airisiko_active_url request "dashboard:exposureupload-list" as active_url %}
+                <li class="breadcrumb-item {{ active_url }}" {% if active_url %}aria-current="page"{% endif %}>
+                  {% if active_url %}
+                  {% translate "Exposure" %}
+                  {% else %}
+                  <a href="{% url 'dashboard:exposureupload-list' %}">{% translate "Exposure" %}</a>
+                  {% endif %}
+                </li>
+                {% endblock %}
+              </ol>
+            </nav>
+            <h1>
+              {% translate "Exposure" %}
+            </h1>
+          </div>
+          <div class="card-body">
+            {% blocktranslate %}
+            <p>List of Exposure imports from CSV files.</p>
+            <p class="m-0">The following actions are available:</p>
+            <ul>
+              <li>View the detail list of imported Exposure</li>
+              <li>Download the CSV file import source</li>
+              <li>Delete imported Exposure</li>
+            </ul>
+            {% endblocktranslate %}
+            <table class="table table-striped dt-responsive nowrap" style="width:100%" id="datatable">
+              <thead>
+                <tr>
+                  <th>{% translate "ID" %}</th>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Created" %}</th>
+                  <th>{% translate "User" %}</th>
+                  <th>{% translate "CSV File" %}</th>
+                  <th>{% translate "Import Status" %}</th>
+                  <th>{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for exposureupload in object_list %}
+                <tr>
+                  <td title="{% translate 'ID' %}">
+                    {{ exposureupload.id }}
+                  </td>
+                  <td>
+                    <a href="{% url 'dashboard:exposureupload-detail' exposureupload.id %}" title="{% translate 'View details' %}">{{ exposureupload.name|default:"-" }}</a>
+                  </td>
+                  <td title="{% translate 'Date created' %}">
+                    {{ exposureupload.created }}
+                  </td>
+                  <td title="{% translate 'Creator' %}">
+                    {{ exposureupload.user|default:"-" }}
+                  </td>
+                  <td>
+                    <a href="{{ exposureupload.file.url }}" target="_blank" title="{% translate 'Download file' %}">{{ exposureupload.file|airisiko_filename }}</a>
+                  </td>
+                  <td title="{% translate 'Import status' %}">
+                    {% if exposureupload.import_status == True %}
+                    <span class="badge bg-success">{% translate "Success" %}</span>
+                    {% elif exposureupload.import_status == False %}
+                    <span class="badge bg-danger">{% translate "Failed" %}</span>
+                    {% else %}
+                    <span class="badge bg-light-secondary">{% translate "In Progress" %}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'dashboard:exposureupload-delete' exposureupload.id %}" class="btn icon btn-sm btn-danger" title="{% translate 'Delete' %}"><i class="bi bi-trash"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript_extra %}
+<script src="{% static 'vendors/datatables/datatables.min.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var table = $("#datatable").DataTable({
+    order: [[ 0, 'desc' ]],
+    pageLength: 50,
+  });
+});
+</script>
+{% endblock %}
