@@ -33,7 +33,7 @@ django-leaflet==0.30.1  # https://github.com/makinacorpus/django-leaflet
 python-magic==0.4.27  # https://github.com/ahupp/python-magic
 django-related-admin==1.0.1  # https://github.com/PetrDlouhy/django-related-admin
 crispy-bootstrap3==2022.1  # https://github.com/django-crispy-forms/crispy-bootstrap3
-boto3==1.28.2  # https://github.com/boto/boto3
+boto3==1.43.111  # https://github.com/boto/boto3
 django-filebrowser-no-grappelli==4.0.2  # https://github.com/smacker/django-filebrowser-no-grappelli
 dj-rest-auth==4.0.0  # https://github.com/iMerica/dj-rest-auth
 djangorestframework-simplejwt==5.3.1  # https://github.com/jazzband/djangorestframework-simplejwt
