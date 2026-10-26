@@ -1,6 +1,6 @@
 # FROM postgres:14
 # postgis geodjango dependencies
-FROM postgis/postgis:15-3.3
+FROM postgis/postgis:18-3.6
 
 COPY ./compose/production/postgres/maintenance /usr/local/bin/maintenance
 RUN chmod +x /usr/local/bin/maintenance/*
